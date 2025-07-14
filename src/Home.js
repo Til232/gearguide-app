@@ -1,20 +1,60 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaRobot, FaArrowRight } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaChevronDown, FaArrowRight } from 'react-icons/fa';
+import logo from './assets/logo.png'; // Your logo from src/assets/
 
-// Neutral hero image: Excitement and adventure emotion (from Unsplash - a person jumping with joy in nature)
-const heroImage = 'https://images.unsplash.com/photo-1501555081622-7a546c061434?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
+// Hero slider images (imported from src/assets/[hobby]/ – matching your screenshot)
+import golfHero from './assets/golf/golfhero1.jpg';
+import hikingHero from './assets/hiking/hikinghero1.jpg';
+import skiHero from './assets/ski/skihero1.jpg';
+import snowboardHero from './assets/snowboard/snowboardhero1.jpg';
 
-// Hobby images (from Unsplash - appear on hover)
+const heroImages = [
+  golfHero,
+  hikingHero,
+  skiHero,
+  snowboardHero,
+];
+
+// Hobby background images (using gear images as background since you don't have separate ones – adjust if added)
+import golfGear from './assets/golf/golfgear1.jpg';
+import hikingGear from './assets/hiking/hikinggear1.jpg';
+import skiGear from './assets/ski/skigear1.jpg';
+import snowboardGear from './assets/snowboard/snowboardgear1.jpg';
+
 const hobbyImages = {
-  Golf: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-  Hiking: 'https://images.unsplash.com/photo-1551632811-4a82a418b50b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-  Ski: 'https://images.unsplash.com/photo-1485809052956-5113b0ff51af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-  Snowboard: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  Golf: golfGear,
+  Hiking: hikingGear,
+  Ski: skiGear,
+  Snowboard: snowboardGear,
+};
+
+// Preload images to fix loading delays
+const preloadImages = (images) => {
+  images.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
 };
 
 const Home = () => {
   const [selectedHobby, setSelectedHobby] = useState('Golf');
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  const navigate = useNavigate(); // For navigating to /kits on hobby selection
+
+  useEffect(() => {
+    preloadImages([...heroImages]); // Preload all images for smoother loading
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000); // Slide every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleHobbySelect = (hobby) => {
+    setSelectedHobby(hobby.name);
+    navigate('/kits'); // Navigate to /kits on selection
+  };
 
   const hobbies = [
     { name: 'Golf' },
@@ -24,52 +64,61 @@ const Home = () => {
   ];
 
   const steps = [
-    { title: 'Gamified Setup – Fun and Easy', description: 'Start with a quick, interactive quiz: Choose your hobby (e.g., Golf), colors, size, budget, and frequency. Simple and engaging—no boring forms!' },
-    { title: 'AI Agents Do the Heavy Lifting', description: 'Our clever AI agents research thousands of options from shops like Amazon. They match your preferences, check availability, prices, and minimize shipping by grouping items from one seller.' },
-    { title: 'Get 3 Personalized Kits', description: 'In seconds, see 3 full, ready-to-buy gear kits tailored to you—complete with descriptions, prices, and order links. E.g., a €180 beginner golf kit with fast shipping!' },
+    { title: 'Gamified Setup – Fun and Easy', description: 'Quick quiz: Hobby, colors, size, budget, frequency—no boring forms!', image: './assets/steps/gamification.png' },
+    { title: 'AI Agents Do the Heavy Lifting', description: 'Bots research shops for matches, availability, prices, and low shipping.', image: './assets/steps/ai.png' },
+    { title: 'Get 3 Personalized Kits', description: 'Tailored kits with descriptions and order links—e.g., €180 beginner set.', image: './assets/steps/kit.png' },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 font-sans antialiased">
-      {/* Hero Section with Neutral Image */}
-      <header className="relative h-screen flex items-center justify-center text-center text-white" style={{ backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Hero Section with Slider */}
+      <header className="relative h-screen flex items-center justify-center text-center text-white overflow-hidden">
+        {/* Slider Background */}
+        <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000" style={{ backgroundImage: `url(${heroImages[currentHeroIndex]})` }}></div>
         <div className="absolute inset-0 bg-black opacity-40"></div>
+        {/* Logo in Top-Left as Home Button */}
+        <Link to="/" className="absolute top-4 left-4">
+          <img src={logo} alt="GearGuide Logo" className="h-24" /> {/* 50% larger logo */}
+        </Link>
+        {/* GearGuide Title on Top of Slider */}
+        <h1 className="absolute top-20 left-1/2 transform -translate-x-1/2 text-7xl font-bold text-white drop-shadow-lg">GearGuide</h1> {/* Bigger title */}
         <div className="relative z-10 max-w-4xl px-4">
-          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">GearGuide: Your AI Smart Gear Finder</h1>
-          <p className="text-xl mb-8 drop-shadow-md">Discover the thrill of hobbies like Golf, Hiking, Ski, or Snowboard without the hassle—let AI curate your perfect gear!</p>
-          {/* Prominent CTA Button */}
-          <Link to="/kits" className="bg-primary text-white px-12 py-6 rounded-full font-bold text-xl hover:bg-secondary transition transform hover:scale-105 shadow-lg hover:shadow-2xl">Start Your Adventure Now</Link>
+          <p className="text-3xl mb-10 drop-shadow-md">Start your hobby right With our AI Gear Guide</p> {/* Updated text, larger */}
         </div>
+        {/* Arrow Down to Encourage Scrolling */}
+        <FaChevronDown className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-4xl text-white animate-bounce" />
       </header>
 
-      {/* 4 Hobbies Section – Buttons with Hover-Reveal Images */}
-      <section className="py-16 max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">Choose Your Hobby</h2>
-        <div className="grid md:grid-cols-4 gap-8">
-          {hobbies.map((hobby) => (
-            <button
-              key={hobby.name}
-              onClick={() => setSelectedHobby(hobby.name)}
-              className="relative p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden text-center"
-              style={{ backgroundColor: selectedHobby === hobby.name ? '#e6f4ea' : '#f9f9f9' }}
-            >
-              {/* Background Image - Appears on Hover */}
-              <div
-                className="absolute inset-0 bg-cover bg-center opacity-0 hover:opacity-50 transition-opacity duration-300"
-                style={{ backgroundImage: `url(${hobbyImages[hobby.name]})` }}
-              ></div>
-              <h3 className="relative z-10 text-2xl font-bold">{hobby.name}</h3>
-            </button>
-          ))}
+      {/* Hobby Section – Larger and Cooler */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-green-50"> {/* Same background as body to avoid cut-off */}
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12">Choose Your Hobby</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {hobbies.map((hobby) => (
+              <button
+                key={hobby.name}
+                onClick={() => handleHobbySelect(hobby)}
+                className="relative p-8 rounded-lg shadow-md hover:shadow-xl hover:border-green-500 hover:scale-105 transition-all duration-500 ease-in-out overflow-hidden text-center bg-white border-2 border-transparent" // Larger padding, cooler hover (border, scale)
+              >
+                {/* Background Image - Appears on Hover */}
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-0 hover:opacity-50 transition-opacity duration-500 ease-in-out"
+                  style={{ backgroundImage: `url(${hobbyImages[hobby.name]})` }}
+                ></div>
+                <h3 className="relative z-10 text-3xl font-bold pointer-events-none">{hobby.name}</h3> {/* Bigger text, pointer-events-none to fix hover bug on text */}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 3 Modern, Sleek Steps Section */}
+      {/* 3 Modern, Sleek Steps Section with Fixed Images */}
       <section className="py-16 bg-gray-100 max-w-6xl mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12">How GearGuide Works for {selectedHobby}</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((step, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+              <img src={step.image} alt="Step Image" className="h-12 w-12 mb-4" /> {/* Small icons */}
               <FaArrowRight className="text-4xl text-primary mb-4" />
               <h3 className="text-2xl font-bold mb-2">Step {index + 1}: {step.title}</h3>
               <p className="text-gray-600">{step.description}</p>
@@ -78,23 +127,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* AI Bots Explanation Section */}
-      <section className="py-16 max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">Our AI Agents in Action</h2>
-        <div className="flex flex-col md:flex-row gap-8 items-center">
-          <FaRobot className="text-6xl text-primary mb-4 md:mb-0" />
-          <p className="text-xl text-gray-700">
-            While you quiz, our AI bots scan shops like Amazon for {selectedHobby} gear. They optimize for your answers, ensuring the best matches and savings.
-          </p>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-8 text-center">
         <p className="text-xl font-bold mb-2">GearGuide – Your Smart Gear Finder</p>
         <div className="flex justify-center gap-4">
           <Link to="/about" className="hover:underline">About Us</Link>
-          <Link to="/kits" className="hover:underline">Start Now</Link>
         </div>
         <p className="mt-4 text-sm">© 2025 GearGuide. All Rights Reserved.</p>
       </footer>
