@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaPuzzlePiece, FaBrain, FaBox } from 'react-icons/fa';
+import { FaChevronDown } from 'react-icons/fa';
 import logo from './assets/logo.png'; // Your logo from src/assets/
 
 // Hero slider images (imported from src/assets/[hobby]/ – matching your screenshot)
@@ -24,6 +24,24 @@ import kit from './assets/steps/kit.png';
 import versand from './assets/steps/versand.png';
 import money from './assets/steps/money.png';
 
+// Partner logos (imported from src/assets/partnerlogos – all files from your screenshot)
+import six86Snowboards from './assets/partnerlogos/686_Snowboards.jpg';
+import arcteryx from './assets/partnerlogos/Arcteryx.jpg';
+import atomic from './assets/partnerlogos/Atomic.png';
+import burtonSnowboards from './assets/partnerlogos/Burton_Snowboards.jpg';
+import callawayGolf from './assets/partnerlogos/Callaway_Golf.jpg';
+import columbiaWandern from './assets/partnerlogos/Columbia_Wandern.jpg';
+import k2Skis from './assets/partnerlogos/K2Skis.jpg';
+import mammutWandern from './assets/partnerlogos/Mammut_Wandern.jpg';
+import meindlWanderschuhe from './assets/partnerlogos/Meindl_Wanderschuhe.png';
+import pingGolf from './assets/partnerlogos/Ping_Golf.jpg';
+import quicksilverSnowboard from './assets/partnerlogos/Quicksilver_Snowboard.jpg';
+import rideSnowboards from './assets/partnerlogos/ride-snowboards.png';
+import rossignol from './assets/partnerlogos/Rossignol.png';
+import taylormadeGolf from './assets/partnerlogos/Taylormade-Golf.jpg';
+import theNorthFaceWandern from './assets/partnerlogos/TheNorthFace_Wandern.jpg';
+import titleistGolf from './assets/partnerlogos/titleist-golf.png';
+
 const heroImages = [
   golfHero,
   hikingHero,
@@ -37,6 +55,26 @@ const hobbyImages = {
   Ski: skiGear,
   Snowboard: snowboardGear,
 };
+
+// Partner logos array for the grid
+const partnerLogos = [
+  six86Snowboards,
+  arcteryx,
+  atomic,
+  burtonSnowboards,
+  callawayGolf,
+  columbiaWandern,
+  k2Skis,
+  mammutWandern,
+  meindlWanderschuhe,
+  pingGolf,
+  quicksilverSnowboard,
+  rideSnowboards,
+  rossignol,
+  taylormadeGolf,
+  theNorthFaceWandern,
+  titleistGolf,
+];
 
 // Preload images to fix loading delays
 const preloadImages = (images) => {
@@ -53,7 +91,7 @@ const Home = () => {
   const navigate = useNavigate(); // For navigating to /kits on hobby selection
 
   useEffect(() => {
-    preloadImages([...heroImages]); // Preload all images for smoother loading
+    preloadImages([...heroImages, ...partnerLogos]); // Preload hero and partner logos
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
     }, 5000); // Slide every 5 seconds
@@ -163,6 +201,18 @@ const Home = () => {
             </div>
           </div>
           <p className="text-gray-600 text-center mt-4">No matter the stores, we handle the process seamlessly from multiple sources.</p>
+        </div>
+      </section>
+
+      {/* New Partner Logos Grid Section – At the very bottom, before footer */}
+      <section className="py-16 bg-white max-w-6xl mx-auto px-4">
+        <h2 className="text-4xl font-bold text-center mb-12">Our Partners</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"> {/* 1 on mobile, 2 on small, 4 on desktop */}
+          {partnerLogos.map((partnerLogo, index) => (
+            <div key={index} className="flex items-center justify-center">
+              <img src={partnerLogo} alt={`Partner Logo ${index + 1}`} className="max-h-20 w-auto object-contain" /> {/* Smaller, centered */}
+            </div>
+          ))}
         </div>
       </section>
 
