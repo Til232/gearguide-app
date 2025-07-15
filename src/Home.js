@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaArrowRight } from 'react-icons/fa';
+import { FaChevronDown, FaPuzzlePiece, FaBrain, FaBox } from 'react-icons/fa';
 import logo from './assets/logo.png'; // Your logo from src/assets/
 
 // Hero slider images (imported from src/assets/[hobby]/ – matching your screenshot)
@@ -9,18 +9,27 @@ import hikingHero from './assets/hiking/hikinghero1.jpg';
 import skiHero from './assets/ski/skihero1.jpg';
 import snowboardHero from './assets/snowboard/snowboardhero1.jpg';
 
+// Hobby background images (using gear images as background since you don't have separate ones – adjust if added)
+import golfGear from './assets/golf/golfgear1.jpg';
+import hikingGear from './assets/hiking/hikinggear1.jpg';
+import skiGear from './assets/ski/skigear1.jpg';
+import snowboardGear from './assets/snowboard/snowboardgear1.jpg';
+
+// Step icons (your PNGs from src/assets/steps/)
+import gamification from './assets/steps/gamification.png';
+import ai from './assets/steps/ai.png';
+import kit from './assets/steps/kit.png';
+
+// Shipping icons (your PNGs from src/assets/steps/)
+import versand from './assets/steps/versand.png';
+import money from './assets/steps/money.png';
+
 const heroImages = [
   golfHero,
   hikingHero,
   skiHero,
   snowboardHero,
 ];
-
-// Hobby background images (using gear images as background since you don't have separate ones – adjust if added)
-import golfGear from './assets/golf/golfgear1.jpg';
-import hikingGear from './assets/hiking/hikinggear1.jpg';
-import skiGear from './assets/ski/skigear1.jpg';
-import snowboardGear from './assets/snowboard/snowboardgear1.jpg';
 
 const hobbyImages = {
   Golf: golfGear,
@@ -64,9 +73,9 @@ const Home = () => {
   ];
 
   const steps = [
-    { title: 'Gamified Setup – Fun and Easy', description: 'Quick quiz: Hobby, colors, size, budget, frequency—no boring forms!', image: './assets/steps/gamification.png' },
-    { title: 'AI Agents Do the Heavy Lifting', description: 'Bots research shops for matches, availability, prices, and low shipping.', image: './assets/steps/ai.png' },
-    { title: 'Get 3 Personalized Kits', description: 'Tailored kits with descriptions and order links—e.g., €180 beginner set.', image: './assets/steps/kit.png' },
+    { title: 'Gamified Setup – Fun and Easy', description: 'Quick quiz: Hobby, colors, size, budget, frequency—no boring forms!', icon: gamification },
+    { title: 'AI Agents Do the Heavy Lifting', description: 'Bots research shops for matches, availability, prices, and low shipping.', icon: ai },
+    { title: 'Get 3 Personalized Kits', description: 'Tailored kits with descriptions and order links—e.g., €180 beginner set.', icon: kit },
   ];
 
   return (
@@ -112,18 +121,48 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3 Modern, Sleek Steps Section with Fixed Images */}
+      {/* 3 Modern, Sleek Steps Section with Gear Images */}
       <section className="py-16 bg-gray-100 max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">How GearGuide Works for {selectedHobby}</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">How GearGuide Works</h2> {/* Generic header */}
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((step, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-              <img src={step.image} alt="Step Image" className="h-12 w-12 mb-4" /> {/* Small icons */}
-              <FaArrowRight className="text-4xl text-primary mb-4" />
-              <h3 className="text-2xl font-bold mb-2">Step {index + 1}: {step.title}</h3>
-              <p className="text-gray-600">{step.description}</p>
+              <div className="flex justify-center mb-4">
+                <img src={step.icon} alt="Step Icon" className="h-24 w-24" /> {/* Twice as big, centered */}
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-center">Step {index + 1}: {step.title}</h3>
+              <p className="text-gray-600 text-center">{step.description}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Reworked Shipping Section – Presented as a Process Flow */}
+      <section className="py-16 bg-gray-100 max-w-6xl mx-auto px-4">
+        <h2 className="text-4xl font-bold text-center mb-12">And what about shipping?</h2>
+        <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-8 mb-4">
+            {/* Payment Stage */}
+            <div className="flex flex-col items-center text-center">
+              <img src={money} alt="Money Icon" className="h-12 w-12 mb-2" />
+              <p className="text-gray-600 font-semibold">You pay us securely first</p>
+            </div>
+            {/* Arrow for Flow */}
+            <span className="text-3xl text-gray-400">→</span>
+            {/* Ordering Stage with Logo */}
+            <div className="flex flex-col items-center text-center">
+              <img src={logo} alt="GearGuide Logo" className="h-12 w-12 mb-2" />
+              <p className="text-gray-600 font-semibold">We order from partner stores using your address</p>
+            </div>
+            {/* Arrow for Flow */}
+            <span className="text-3xl text-gray-400">→</span>
+            {/* Shipping Stage */}
+            <div className="flex flex-col items-center text-center">
+              <img src={versand} alt="Shipping Icon" className="h-12 w-12 mb-2" />
+              <p className="text-gray-600 font-semibold">They ship directly to you</p>
+            </div>
+          </div>
+          <p className="text-gray-600 text-center mt-4">No matter the stores, we handle the process seamlessly from multiple sources.</p>
         </div>
       </section>
 
