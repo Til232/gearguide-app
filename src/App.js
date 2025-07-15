@@ -1,19 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './Home';
-import Kits from './Kits';
-import About from './About';
-import './index.css'; // Tailwind
+import { Routes, Route } from 'react-router-dom'; // Neu: Import für Routes und Route
+import Home from './Home'; // Deine Home-Komponente (aus src/Home.js)
+import Kits from './Kits'; // Annahme: Deine Kits-Komponente (erstelle sie, falls nicht da)
 
 function App() {
   return (
-    <Router>
+    <div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/kits" element={<Kits />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/" element={<Home />} /> {/* Route für die Home-Seite */}
+        <Route path="/kits" element={<Kits />} /> {/* Route für /kits (deine Navigate-Ziel) */}
+        {/* Füge hier weitere Routes hinzu, falls du mehr hast */}
       </Routes>
-    </Router>
+    </div>
   );
 }
 
