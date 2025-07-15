@@ -102,6 +102,8 @@ const Home = () => {
     setSelectedHobby(hobby.name);
     if (hobby.name === 'Golf') {
       navigate('/golf');
+    } else if (hobby.name === 'Hiking') { 
+      navigate('/hiking');
     } else {
       // For other hobbies, show a message or do nothing since no page yet
       alert('Coming soon for ' + hobby.name + '!');
