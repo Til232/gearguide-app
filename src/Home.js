@@ -88,7 +88,7 @@ const Home = () => {
   const [selectedHobby, setSelectedHobby] = useState('Golf');
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
-  const navigate = useNavigate(); // For navigating to /kits on hobby selection
+  const navigate = useNavigate(); // For navigating on hobby selection
 
   useEffect(() => {
     preloadImages([...heroImages, ...partnerLogos]); // Preload hero and partner logos
@@ -100,7 +100,12 @@ const Home = () => {
 
   const handleHobbySelect = (hobby) => {
     setSelectedHobby(hobby.name);
-    navigate('/kits'); // Navigate to /kits on selection
+    if (hobby.name === 'Golf') {
+      navigate('/golf');
+    } else {
+      // For other hobbies, show a message or do nothing since no page yet
+      alert('Coming soon for ' + hobby.name + '!');
+    }
   };
 
   const hobbies = [
