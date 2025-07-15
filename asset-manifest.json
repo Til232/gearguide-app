@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/gearguide-app/static/css/main.7d7b25b9.css",
-    "main.js": "/gearguide-app/static/js/main.04d2c06b.js",
+    "main.css": "/gearguide-app/static/css/main.e43755b7.css",
+    "main.js": "/gearguide-app/static/js/main.56b1201d.js",
     "static/media/golfhero1.jpg": "/gearguide-app/static/media/golfhero1.33138229f562cea2084a.jpg",
     "static/media/golfgear1.jpg": "/gearguide-app/static/media/golfgear1.e751379f7fcce190e2ee.jpg",
     "static/media/skigear1.jpg": "/gearguide-app/static/media/skigear1.650e8e0861b0816230f8.jpg",
@@ -11,17 +11,28 @@
     "static/media/logo.png": "/gearguide-app/static/media/logo.66df76c48483e8e6a8be.png",
     "static/media/snowboardhero1.jpg": "/gearguide-app/static/media/snowboardhero1.c44e9182271f7e124c42.jpg",
     "static/media/skihero1.jpg": "/gearguide-app/static/media/skihero1.7d1f6716d37a7565785c.jpg",
+    "static/media/ride-snowboards.png": "/gearguide-app/static/media/ride-snowboards.02ca00f9639638ffcb8e.png",
+    "static/media/Quicksilver_Snowboard.jpg": "/gearguide-app/static/media/Quicksilver_Snowboard.cfba6911d03511c2d76c.jpg",
+    "static/media/titleist-golf.png": "/gearguide-app/static/media/titleist-golf.73209415b2bdc918cd3a.png",
+    "static/media/Burton_Snowboards.jpg": "/gearguide-app/static/media/Burton_Snowboards.3defdd7722a8811f7336.jpg",
+    "static/media/TheNorthFace_Wandern.jpg": "/gearguide-app/static/media/TheNorthFace_Wandern.98cb7abc9cbc2666cdf3.jpg",
     "static/media/gamification.png": "/gearguide-app/static/media/gamification.ad094560c4f6d0f5d297.png",
     "static/media/kit.png": "/gearguide-app/static/media/kit.274488bb7e1a520d7ba5.png",
     "static/media/versand.png": "/gearguide-app/static/media/versand.53fdbc8535922896db21.png",
     "static/media/ai.png": "/gearguide-app/static/media/ai.5a4da4abb63311c60cf4.png",
+    "static/media/Rossignol.png": "/gearguide-app/static/media/Rossignol.490926f70d0436fcc204.png",
+    "static/media/Meindl_Wanderschuhe.png": "/gearguide-app/static/media/Meindl_Wanderschuhe.c51ab43d6a5cbc8382fb.png",
     "static/media/money.png": "/gearguide-app/static/media/money.029bc256d16999731ae9.png",
+    "static/media/Taylormade-Golf.jpg": "/gearguide-app/static/media/Taylormade-Golf.d846ca19cc3adf6fb758.jpg",
+    "static/media/Callaway_Golf.jpg": "/gearguide-app/static/media/Callaway_Golf.7a0f2b6d9fad18a06242.jpg",
+    "static/media/Arcteryx.jpg": "/gearguide-app/static/media/Arcteryx.f09b1a7d15b8978f8919.jpg",
+    "static/media/Columbia_Wandern.jpg": "/gearguide-app/static/media/Columbia_Wandern.a5b3154ec50808d22c73.jpg",
     "index.html": "/gearguide-app/index.html",
-    "main.7d7b25b9.css.map": "/gearguide-app/static/css/main.7d7b25b9.css.map",
-    "main.04d2c06b.js.map": "/gearguide-app/static/js/main.04d2c06b.js.map"
+    "main.e43755b7.css.map": "/gearguide-app/static/css/main.e43755b7.css.map",
+    "main.56b1201d.js.map": "/gearguide-app/static/js/main.56b1201d.js.map"
   },
   "entrypoints": [
-    "static/css/main.7d7b25b9.css",
-    "static/js/main.04d2c06b.js"
+    "static/css/main.e43755b7.css",
+    "static/js/main.56b1201d.js"
   ]
 }
