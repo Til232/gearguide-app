@@ -18,7 +18,7 @@ const Golf = () => {
   const [answers, setAnswers] = useState({
     gender: '', // Geschlecht
     frequency: '', // Wie oft?
-    colorPalette: '', // Farbpalette
+    colorPalette: [], // Farbpalette (multi-select)
     setType: [], // Was brauchst du? (multi-select)
     size: '', // Größe
     budget: '', // Budget
@@ -32,7 +32,18 @@ const Golf = () => {
     setAnswers({ ...answers, [key]: value });
   };
 
-  const colors = ['Weiß', 'Dunkelblau']; // Begrenzt auf Weiß und Dunkelblau
+  // For multi-select colorPalette
+  const handleColorChange = (color, checked) => {
+    let newColors = [...answers.colorPalette];
+    if (checked) {
+      newColors.push(color);
+    } else {
+      newColors = newColors.filter(c => c !== color);
+    }
+    updateAnswer('colorPalette', newColors);
+  };
+
+  const colors = ['Weiß', 'Grün', 'Braun', 'Schwarz', 'Grau', 'Blau', 'Beige', 'Rot']; // Unified color options (Gelb removed)
 
   const setOptions = ['Cap', 'Polo', 'Hose', 'Schuhe', 'Clubset']; // Updated multi-choice
 
@@ -61,7 +72,7 @@ const Golf = () => {
     if (
       !answers.gender ||
       !answers.frequency ||
-      !answers.colorPalette ||
+      answers.colorPalette.length === 0 ||
       answers.setType.length === 0 ||
       !answers.size ||
       !answers.budget
@@ -81,6 +92,7 @@ const Golf = () => {
   };
 
   // Image map using imported local images
+  // Map 'Blau' to the old 'Dunkelblau' images
   const imageMap = {
     'Weiß': {
       'Cap': golfCapWeiss,
@@ -89,7 +101,7 @@ const Golf = () => {
       'Schuhe': golfSchuhWeiss,
       'Clubset': golfClubsWeiss,
     },
-    'Dunkelblau': {
+    'Blau': {
       'Cap': golfCapBlau,
       'Polo': golfPoloBlau,
       'Hose': golfHoseBlau,
@@ -100,25 +112,35 @@ const Golf = () => {
 
   // Fake AI-Funktion: Generiert 1-3 Sets basierend auf Inputs
   const generateMockResults = () => {
-    const color = answers.colorPalette === 'Weiß' ? 'weiß' : 'dunkelblau';
     const budgetValue = parseInt(answers.budget, 10) || 0; // Safely parse to number
     const numSets = budgetValue > 800 ? 3 : (budgetValue > 500 ? 2 : 1); // 1-3 Sets basierend auf Budget
     const sets = [];
     const basePrice = budgetValue / numSets; // Preis an Budget anpassen
 
-    for (let i = 1; i <= numSets; i++) {
+    // For each selected color, generate a set (show all selected colors)
+    const selectedColors = answers.colorPalette.length > 0 ? answers.colorPalette : ['Weiß'];
+    for (let i = 0; i < selectedColors.length; i++) {
+      const color = selectedColors[i];
+      let colorLabel;
+      if (color === 'Weiß') {
+        colorLabel = 'weiß';
+      } else if (color === 'Blau') {
+        colorLabel = 'dunkelblau'; // Use old label for Blau
+      } else {
+        colorLabel = color.toLowerCase();
+      }
       const setItems = answers.setType.map((item) => ({
         name: item,
-        description: `${color.charAt(0).toUpperCase() + color.slice(1)} ${item.toLowerCase()}`,
+        description: `${colorLabel.charAt(0).toUpperCase() + colorLabel.slice(1)} ${item.toLowerCase()}`,
         price: Math.floor(Math.random() * 100 + 50), // Zufälliger Preis pro Item (50-150 €)
-        image: imageMap[answers.colorPalette][item] || 'https://via.placeholder.com/150x150?text=Fallback+Image', // Use local image from map, or fallback
+        image: (imageMap[color] && imageMap[color][item]) || 'https://via.placeholder.com/150x150?text=Fallback+Image', // Use local image from map, or fallback
       }));
       const totalPrice = setItems.reduce((sum, item) => sum + item.price, 0);
 
       sets.push({
-        title: `Golf Set ${i} (${color})`,
+        title: `Golf Set ${i + 1} (${color})`,
         items: setItems,
-        totalPrice: Math.min(totalPrice, budgetValue), // Passt zum Budget
+        totalPrice: totalPrice, // Show actual combined price
       });
     }
     return sets;
@@ -226,21 +248,41 @@ const Golf = () => {
               </div>
             </motion.div>
 
-            {/* Frage 3: Farbpalette (Coolere Swatches mit Labels) */}
+            {/* Frage 3: Farbpalette (Mehrfachauswahl möglich) */}
             <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl mb-4 text-center">Wähle deine Farbpalette</h2>
-              <div className="grid grid-cols-2 gap-4 justify-center">
-                {colors.map((color) => (
-                  <motion.div 
-                    key={color} 
-                    className={`cursor-pointer border-2 rounded p-4 text-center ${answers.colorPalette === color ? 'border-green-700 shadow-md' : 'border-transparent'}`}
-                    onClick={() => updateAnswer('colorPalette', color)} 
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="w-full h-16 rounded mb-2" style={{ backgroundColor: color === 'Weiß' ? 'white' : 'darkblue', border: color === 'Weiß' ? '1px solid gray' : 'none' }} />
-                    <p className="text-lg font-semibold">{color}</p>
-                  </motion.div>
-                ))}
+              <h2 className="text-2xl mb-4 text-center">Wähle deine Farbpalette (Mehrfachauswahl möglich)</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-center">
+                {colors.map((color) => {
+                  let bg;
+                  switch (color) {
+                    case 'Weiß': bg = 'white'; break;
+                    case 'Grün': bg = 'green'; break;
+                    case 'Braun': bg = 'brown'; break;
+                    case 'Schwarz': bg = 'black'; break;
+                    case 'Grau': bg = 'grey'; break;
+                    case 'Blau': bg = 'blue'; break;
+                    case 'Beige': bg = '#f5f5dc'; break;
+                    case 'Rot': bg = 'red'; break;
+                    case 'Gelb': bg = 'yellow'; break;
+                    default: bg = 'white';
+                  }
+                  return (
+                    <motion.label
+                      key={color}
+                      className={`cursor-pointer border-2 rounded p-4 text-center flex flex-col items-center ${answers.colorPalette.includes(color) ? 'border-green-700 shadow-md' : 'border-transparent'}`}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={answers.colorPalette.includes(color)}
+                        onChange={e => handleColorChange(color, e.target.checked)}
+                        className="mb-2"
+                      />
+                      <div className="w-full h-12 rounded mb-2" style={{ backgroundColor: bg, border: color === 'Weiß' ? '1px solid gray' : 'none' }} />
+                      <p className="text-lg font-semibold">{color}</p>
+                    </motion.label>
+                  );
+                })}
               </div>
             </motion.div>
 
