@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/gearguide-app/static/css/main.f3cfff2a.css",
-    "main.js": "/gearguide-app/static/js/main.65376cec.js",
+    "main.css": "/gearguide-app/static/css/main.7d7b25b9.css",
+    "main.js": "/gearguide-app/static/js/main.04d2c06b.js",
     "static/media/golfhero1.jpg": "/gearguide-app/static/media/golfhero1.33138229f562cea2084a.jpg",
     "static/media/golfgear1.jpg": "/gearguide-app/static/media/golfgear1.e751379f7fcce190e2ee.jpg",
     "static/media/skigear1.jpg": "/gearguide-app/static/media/skigear1.650e8e0861b0816230f8.jpg",
@@ -17,11 +17,11 @@
     "static/media/ai.png": "/gearguide-app/static/media/ai.5a4da4abb63311c60cf4.png",
     "static/media/money.png": "/gearguide-app/static/media/money.029bc256d16999731ae9.png",
     "index.html": "/gearguide-app/index.html",
-    "main.f3cfff2a.css.map": "/gearguide-app/static/css/main.f3cfff2a.css.map",
-    "main.65376cec.js.map": "/gearguide-app/static/js/main.65376cec.js.map"
+    "main.7d7b25b9.css.map": "/gearguide-app/static/css/main.7d7b25b9.css.map",
+    "main.04d2c06b.js.map": "/gearguide-app/static/js/main.04d2c06b.js.map"
   },
   "entrypoints": [
-    "static/css/main.f3cfff2a.css",
-    "static/js/main.65376cec.js"
+    "static/css/main.7d7b25b9.css",
+    "static/js/main.04d2c06b.js"
   ]
 }
