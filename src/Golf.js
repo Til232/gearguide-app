@@ -3,167 +3,239 @@ import { motion } from 'framer-motion'; // For animations
 
 const Golf = () => {
   const [answers, setAnswers] = useState({
-    type: '', // Privat or Unternehmen
-    frequency: 50, // Slider value (0-100, e.g., 0 = rarely, 100 = daily)
-    gender: '', // Male/Female/Other
-    colorPalette: '', // Selected color
-    setType: [], // Full set or parts (checkboxes)
-    size: '', // S/M/L/XL
-    budget: '', // Input
-    address: '', // Input
-    specials: '', // Amazon preference (optional)
+    firstName: '', // Vorname
+    lastName: '', // Nachname
+    gender: '', // Geschlecht
+    frequency: '', // Wie oft?
+    colorPalette: '', // Farbpalette
+    setType: [], // Was brauchst du? (multi-select)
+    size: '', // Größe
+    budget: '', // Budget
+    country: '', // Land
+    state: '', // Bundesland/Kanton
+    plz: '', // PLZ
+    street: '', // Straße
+    houseNumber: '', // Hausnummer
+    specials: '', // Besondere Vorlieben (free text)
   });
+
+  const [showGreeting, setShowGreeting] = useState(false); // For dynamic Hi [Vorname]
 
   const updateAnswer = (key, value) => {
     setAnswers({ ...answers, [key]: value });
+    if (key === 'firstName' && value.trim()) {
+      setShowGreeting(true); // Zeige Begrüßung
+    } else if (key === 'firstName' && !value.trim()) {
+      setShowGreeting(false);
+    }
   };
 
-  const colors = ['Black', 'Green', 'White', 'Blue', 'Red']; // Example palette options
+  const colors = ['Weiß', 'Dunkelblau']; // Begrenzt auf Weiß und Dunkelblau
 
-  const setOptions = ['Full Set', 'Clubs Only', 'Balls Only', 'Apparel']; // Checkboxes for what to buy
+  const setOptions = ['Cap', 'Polo', 'Hose', 'Schuhe', 'Clubset']; // Updated multi-choice
+
+  const frequencyOptions = ['Mehrmals pro Woche', 'Wöchentlich', 'Monatlich', 'Wenige Male im Jahr']; // Button-Optionen
+
+  const countryOptions = ['Deutschland', 'Österreich', 'Schweiz', 'Anderes']; // Dropdown-Optionen
+
+  const handleAllesSelect = (checked) => {
+    if (checked) {
+      updateAnswer('setType', [...setOptions]); // Wähle alles aus
+    } else {
+      updateAnswer('setType', []); // Wähle nichts aus
+    }
+  };
+
+  const handleSetTypeChange = (option, checked) => {
+    let newSet = [...answers.setType];
+    if (checked) {
+      newSet.push(option);
+    } else {
+      newSet = newSet.filter(o => o !== option);
+    }
+    updateAnswer('setType', newSet);
+  };
 
   const handleSubmit = () => {
-    // Required fields check
+    // Pflichtfelder prüfen
     if (
-      !answers.type ||
-      answers.frequency === 0 ||
+      !answers.firstName.trim() ||
+      !answers.lastName.trim() ||
       !answers.gender ||
+      !answers.frequency ||
       !answers.colorPalette ||
       answers.setType.length === 0 ||
       !answers.size ||
       !answers.budget ||
-      !answers.address
+      !answers.country ||
+      !answers.state.trim() ||
+      !answers.plz.trim() ||
+      !answers.street.trim() ||
+      !answers.houseNumber.trim()
     ) {
-      alert('Please fill out all required fields (specials is optional)!');
+      alert('Bitte alle Pflichtfelder ausfüllen (Besondere Vorlieben ist optional)!');
       return;
     }
-    console.log('Submitted answers:', answers);
-    alert('AI starting to crawl and generate kits... Check console for answers!');
-    // Here, add your AI crawling logic, e.g., call an API with answers
+    console.log('Gesendete Antworten:', answers);
+    alert('AI startet die Suche und Erstellung der Kits... Schau in die Konsole für die Antworten!');
+    // Hier AI-Crawling-Logik hinzufügen, z.B. API-Aufruf mit Antworten
   };
 
-  // Animation variants for buttons
+  // Animation-Varianten für Buttons und Cards
   const buttonVariants = {
     hover: { scale: 1.05 },
+    tap: { scale: 0.95 },
+  };
+
+  const cardVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-300 font-sans antialiased p-8">
-      <h1 className="text-4xl font-bold text-center mb-12 text-green-800">Golf Gear Quiz – Let's Get Started!</h1>
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg space-y-8"> {/* All questions in one container with space-y-8 for vertical spacing */}
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-200 font-sans antialiased p-8"> {/* Soft green gradient for golf feel, no image */}
+      <h1 className="text-4xl font-bold text-center mb-12 text-green-800">Golf Gear Quiz – Los geht's!</h1>
+      <div className="max-w-2xl mx-auto space-y-8"> {/* Hauptcontainer mit Abstand */}
 
-        {/* Question 1: Privat or Unternehmen */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Are you shopping for private use or business?</h2>
+        {/* Begrüßung (zeigt sich nach Eingabe des Vornamens) */}
+        {showGreeting && (
+          <motion.p 
+            className="text-2xl text-center text-green-600 font-semibold"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Hi {answers.firstName}!
+          </motion.p>
+        )}
+
+        {/* Frage 1: Vor- und Nachname */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Name</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input 
+              type="text" 
+              placeholder="Vorname" 
+              value={answers.firstName} 
+              onChange={(e) => updateAnswer('firstName', e.target.value)} 
+              className="p-2 border rounded w-full"
+            />
+            <input 
+              type="text" 
+              placeholder="Nachname" 
+              value={answers.lastName} 
+              onChange={(e) => updateAnswer('lastName', e.target.value)} 
+              className="p-2 border rounded w-full"
+            />
+          </div>
+        </motion.div>
+
+        {/* Frage 2: Geschlecht */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Geschlecht</h2>
           <div className="flex justify-center gap-4">
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
-              onClick={() => updateAnswer('type', 'Privat')} 
-              className={`p-4 rounded text-white ${answers.type === 'Privat' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
+              whileTap="tap"
+              onClick={() => updateAnswer('gender', 'Männlich')} 
+              className={`p-4 rounded text-white ${answers.gender === 'Männlich' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
-              Privat
+              Männlich
             </motion.button>
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
-              onClick={() => updateAnswer('type', 'Unternehmen')} 
-              className={`p-4 rounded text-white ${answers.type === 'Unternehmen' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
+              whileTap="tap"
+              onClick={() => updateAnswer('gender', 'Weiblich')} 
+              className={`p-4 rounded text-white ${answers.gender === 'Weiblich' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
-              Unternehmen
+              Weiblich
+            </motion.button>
+            <motion.button 
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              onClick={() => updateAnswer('gender', 'Anderes')} 
+              className={`p-4 rounded text-white ${answers.gender === 'Anderes' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
+            >
+              Anderes
             </motion.button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Question 2: Wie oft? (Slider) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">How often do you play golf?</h2>
-          <input 
-            type="range" 
-            min="0" max="100" 
-            value={answers.frequency} 
-            onChange={(e) => updateAnswer('frequency', e.target.value)} 
-            className="w-full"
-          />
-          <p className="text-center mt-2">{answers.frequency < 33 ? 'Rarely' : answers.frequency < 67 ? 'Occasionally' : 'Frequently'}</p>
-        </div>
-
-        {/* Question 3: Geschlecht (Buttons) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Gender</h2>
-          <div className="flex justify-center gap-4">
-            <motion.button 
-              variants={buttonVariants}
-              whileHover="hover"
-              onClick={() => updateAnswer('gender', 'Male')} 
-              className={`p-4 rounded text-white ${answers.gender === 'Male' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
-            >
-              Male
-            </motion.button>
-            <motion.button 
-              variants={buttonVariants}
-              whileHover="hover"
-              onClick={() => updateAnswer('gender', 'Female')} 
-              className={`p-4 rounded text-white ${answers.gender === 'Female' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
-            >
-              Female
-            </motion.button>
-            <motion.button 
-              variants={buttonVariants}
-              whileHover="hover"
-              onClick={() => updateAnswer('gender', 'Other')} 
-              className={`p-4 rounded text-white ${answers.gender === 'Other' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
-            >
-              Other
-            </motion.button>
+        {/* Frage 3: Wie oft? (Buttons) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Wie oft spielst du Golf?</h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            {frequencyOptions.map((option) => (
+              <motion.button 
+                key={option}
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={() => updateAnswer('frequency', option)} 
+                className={`p-4 rounded text-white ${answers.frequency === option ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
+              >
+                {option}
+              </motion.button>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Question 4: Color palette (Swatches) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Choose your color palette</h2>
-          <div className="grid grid-cols-5 gap-4 justify-center">
+        {/* Frage 4: Farbpalette (Coolere Swatches mit Labels) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Wähle deine Farbe</h2>
+          <div className="grid grid-cols-2 gap-4 justify-center">
             {colors.map((color) => (
               <motion.div 
                 key={color} 
-                className={`w-16 h-16 rounded cursor-pointer border-2 ${answers.colorPalette === color ? 'border-green-700' : 'border-transparent'}`}
-                style={{ backgroundColor: color.toLowerCase() }} 
+                className={`cursor-pointer border-2 rounded p-4 text-center ${answers.colorPalette === color ? 'border-green-700 shadow-md' : 'border-transparent'}`}
                 onClick={() => updateAnswer('colorPalette', color)} 
-                whileHover={{ scale: 1.1 }}
-              />
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="w-full h-16 rounded mb-2" style={{ backgroundColor: color === 'Weiß' ? 'white' : 'darkblue', border: color === 'Weiß' ? '1px solid gray' : 'none' }} />
+                <p className="text-lg font-semibold">{color}</p>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Question 5: Was (ganzes Set oder nur Teile? Checkboxes) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">What do you want? (Select all that apply)</h2>
+        {/* Frage 5: Was brauchst du? (Multi-choice checkboxes mit "Ich brauche alles") */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Was brauchst du? (Mehrfachauswahl möglich)</h2>
           <div className="space-y-2">
+            <label className="block text-lg">
+              <input 
+                type="checkbox" 
+                checked={answers.setType.length === setOptions.length} 
+                onChange={(e) => handleAllesSelect(e.target.checked)} 
+                className="mr-2"
+              />
+              Ich brauche alles
+            </label>
             {setOptions.map((option) => (
-              <label key={option} className="block">
+              <label key={option} className="block text-lg">
                 <input 
                   type="checkbox" 
                   checked={answers.setType.includes(option)} 
-                  onChange={(e) => {
-                    let newSet = [...answers.setType];
-                    if (e.target.checked) newSet.push(option); else newSet = newSet.filter(o => o !== option);
-                    updateAnswer('setType', newSet);
-                  }}
+                  onChange={(e) => handleSetTypeChange(option, e.target.checked)} 
                   className="mr-2"
                 />
                 {option}
               </label>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Question 6: Grösse (Buttons) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Size</h2>
+        {/* Frage 6: Größe (Buttons) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Größe</h2>
           <div className="flex justify-center gap-4">
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
+              whileTap="tap"
               onClick={() => updateAnswer('size', 'S')} 
               className={`p-4 rounded text-white ${answers.size === 'S' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
@@ -172,6 +244,7 @@ const Golf = () => {
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
+              whileTap="tap"
               onClick={() => updateAnswer('size', 'M')} 
               className={`p-4 rounded text-white ${answers.size === 'M' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
@@ -180,6 +253,7 @@ const Golf = () => {
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
+              whileTap="tap"
               onClick={() => updateAnswer('size', 'L')} 
               className={`p-4 rounded text-white ${answers.size === 'L' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
@@ -188,68 +262,92 @@ const Golf = () => {
             <motion.button 
               variants={buttonVariants}
               whileHover="hover"
+              whileTap="tap"
               onClick={() => updateAnswer('size', 'XL')} 
               className={`p-4 rounded text-white ${answers.size === 'XL' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
             >
               XL
             </motion.button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Question 7: Budget (Input) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Budget</h2>
+        {/* Frage 7: Budget (Input) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Budget insgesamt</h2>
           <input 
             type="number" 
-            placeholder="Enter budget in €" 
+            placeholder="Budget in € eingeben" 
             value={answers.budget} 
             onChange={(e) => updateAnswer('budget', e.target.value)} 
             className="w-full p-2 border rounded"
           />
-        </div>
+        </motion.div>
 
-        {/* Question 8: Adresse Name (Input) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Address and Name</h2>
-          <input 
-            type="text" 
-            placeholder="Enter name and address" 
-            value={answers.address} 
-            onChange={(e) => updateAnswer('address', e.target.value)} 
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Question 9: Specials (Buttons, optional) */}
-        <div className="mb-8">
-          <h2 className="text-2xl mb-4 text-center">Special preferences (optional)</h2>
-          <div className="flex justify-center gap-4">
-            <motion.button 
-              variants={buttonVariants}
-              whileHover="hover"
-              onClick={() => updateAnswer('specials', 'No Amazon')} 
-              className={`p-4 rounded text-white ${answers.specials === 'No Amazon' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
+        {/* Frage 8: Adresse (Separate Felder) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Adresse</h2>
+          <div className="space-y-4">
+            <select 
+              value={answers.country} 
+              onChange={(e) => updateAnswer('country', e.target.value)} 
+              className="w-full p-2 border rounded"
             >
-              No Amazon
-            </motion.button>
-            <motion.button 
-              variants={buttonVariants}
-              whileHover="hover"
-              onClick={() => updateAnswer('specials', 'Prefer Amazon Premium')} 
-              className={`p-4 rounded text-white ${answers.specials === 'Prefer Amazon Premium' ? 'bg-green-700' : 'bg-green-500 hover:bg-green-600'}`}
-            >
-              Prefer Amazon (Premium)
-            </motion.button>
+              <option value="">Land auswählen</option>
+              {countryOptions.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+            <input 
+              type="text" 
+              placeholder="Bundesland/Kanton" 
+              value={answers.state} 
+              onChange={(e) => updateAnswer('state', e.target.value)} 
+              className="w-full p-2 border rounded"
+            />
+            <input 
+              type="text" 
+              placeholder="PLZ" 
+              value={answers.plz} 
+              onChange={(e) => updateAnswer('plz', e.target.value)} 
+              className="w-full p-2 border rounded"
+            />
+            <input 
+              type="text" 
+              placeholder="Straße" 
+              value={answers.street} 
+              onChange={(e) => updateAnswer('street', e.target.value)} 
+              className="w-full p-2 border rounded"
+            />
+            <input 
+              type="text" 
+              placeholder="Hausnummer" 
+              value={answers.houseNumber} 
+              onChange={(e) => updateAnswer('houseNumber', e.target.value)} 
+              className="w-full p-2 border rounded"
+            />
           </div>
-        </div>
+        </motion.div>
 
-        {/* Find Gear Button */}
+        {/* Frage 9: Besondere Vorlieben (Textarea mit Placeholder) */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate" className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl mb-4 text-center">Extrawunsch? (optional)</h2>
+          <textarea 
+            placeholder="Z.B. Kein Amazon oder Amazon Premium bevorzugt" 
+            value={answers.specials} 
+            onChange={(e) => updateAnswer('specials', e.target.value)} 
+            className="w-full p-2 border rounded h-24"
+          />
+        </motion.div>
+
+        {/* Gear finden Button */}
         <motion.button 
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
           onClick={handleSubmit} 
           className="block w-full p-4 bg-green-700 text-white rounded hover:bg-green-800 text-xl font-bold"
-          whileHover={{ scale: 1.05 }}
         >
-          Find Gear
+          Gear finden
         </motion.button>
       </div>
     </div>
